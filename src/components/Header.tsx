@@ -31,6 +31,15 @@ const Header = () => {
           <Link to="/turistico" className="text-sm font-medium transition-colors hover:text-primary">
             Pontos Turísticos
           </Link>
+          <Link to="/frota" className="text-sm font-medium transition-colors hover:text-primary">
+            Frota
+          </Link>
+          <Link to="/pessoas" className="text-sm font-medium transition-colors hover:text-primary">
+            Pessoas
+          </Link>
+          <Link to="/cadastro" className="text-sm font-medium transition-colors hover:text-primary">
+            Cadastro
+          </Link>
         </nav>
 
         <Button
@@ -72,6 +81,27 @@ const Header = () => {
             onClick={() => setMobileMenuOpen(false)}
           >
             Pontos Turísticos
+          </Link>
+          <Link
+            to="/frota"
+            className="text-sm font-medium transition-colors hover:text-primary"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Frota
+          </Link>
+          <Link
+            to="/pessoas"
+            className="text-sm font-medium transition-colors hover:text-primary"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Pessoas
+          </Link>
+          <Link
+            to="/cadastro"
+            className="text-sm font-medium transition-colors hover:text-primary"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Cadastro
           </Link>
         </nav>
       )}

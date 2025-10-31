@@ -1,12 +1,18 @@
 import { useState } from "react";
-import { Bus, Clock, MapPin } from "lucide-react";
+import { Bus, Clock, MapPin, ShoppingCart } from "lucide-react";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { mockLinhas, mockCronogramas, mockViagens } from "@/data/mockData";
+import ModalDetalhesLinha from "@/components/ModalDetalhesLinha";
+import ModalCompraPassagem from "@/components/ModalCompraPassagem";
+import { Linha } from "@/types/transit";
 
 const Linhas = () => {
-  const [selectedLinha, setSelectedLinha] = useState<number | null>(null);
+  const [selectedLinha, setSelectedLinha] = useState<Linha | null>(null);
+  const [detalhesOpen, setDetalhesOpen] = useState(false);
+  const [compraOpen, setCompraOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -29,8 +35,7 @@ const Linhas = () => {
             return (
               <Card
                 key={linha.id}
-                className="cursor-pointer transition-all hover:shadow-hover hover:-translate-y-1 animate-slide-in"
-                onClick={() => setSelectedLinha(linha.id)}
+                className="transition-all hover:shadow-hover animate-slide-in"
               >
                 <CardHeader>
                   <div className="flex items-start justify-between">
@@ -83,15 +88,47 @@ const Linhas = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
-                    <span>Ver itinerário completo</span>
+                  <div className="flex gap-2 pt-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        setSelectedLinha(linha);
+                        setDetalhesOpen(true);
+                      }}
+                    >
+                      <MapPin className="h-4 w-4 mr-1" />
+                      Ver Rota
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => {
+                        setSelectedLinha(linha);
+                        setCompraOpen(true);
+                      }}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-1" />
+                      Comprar
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             );
           })}
         </div>
+
+        <ModalDetalhesLinha
+          linha={selectedLinha}
+          open={detalhesOpen}
+          onOpenChange={setDetalhesOpen}
+        />
+        <ModalCompraPassagem
+          linha={selectedLinha}
+          open={compraOpen}
+          onOpenChange={setCompraOpen}
+        />
       </main>
     </div>
   );
