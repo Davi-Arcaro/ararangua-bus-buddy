@@ -1,11 +1,53 @@
-import { MapPin, Navigation } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { MapPin, Navigation, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { mockParadas, mockPontosTuristicos } from "@/data/mockData";
+import { pontoParadaService } from "@/services/pontoParadaService";
+import { pontoTuristicoService } from "@/services/pontoTuristicoService";
+import { pontoParadaTuristicoService } from "@/services/pontoParadaTuristicoService";
 
 const Paradas = () => {
+  const { data: paradasData, isLoading } = useQuery({
+    queryKey: ['paradas'],
+    queryFn: async () => {
+      const response = await pontoParadaService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const { data: turisticosData } = useQuery({
+    queryKey: ['pontos-turisticos'],
+    queryFn: async () => {
+      const response = await pontoTuristicoService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const { data: relacaoData } = useQuery({
+    queryKey: ['pontos-parada-turisticos'],
+    queryFn: async () => {
+      const response = await pontoParadaTuristicoService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const paradas = paradasData?.content || [];
+  const turisticos = turisticosData?.content || [];
+  const relacoes = relacaoData?.content || [];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container py-8 flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -20,12 +62,9 @@ const Paradas = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {mockParadas.map((parada) => {
-            // Simulação: algumas paradas têm pontos turísticos próximos
-            const temPontoTuristico = parada.id <= 4;
-            const pontoProximo = temPontoTuristico
-              ? mockPontosTuristicos[Math.min(parada.id - 1, mockPontosTuristicos.length - 1)]
-              : null;
+          {paradas.map((parada) => {
+            const relacao = relacoes.find(r => r.ponto_parada_id === parada.id);
+            const pontoProximo = relacao ? turisticos.find(t => t.id === relacao.ponto_turistico_id) : null;
 
             return (
               <Card

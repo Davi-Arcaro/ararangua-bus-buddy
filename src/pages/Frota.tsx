@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,8 +10,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Bus, Wrench, Package, Plus, AlertCircle } from "lucide-react";
-import { mockVeiculos, mockManutencoes, mockPecas, mockPessoas } from "@/data/mockData";
+import { Bus, Wrench, Package, Plus, AlertCircle, Loader2 } from "lucide-react";
+import { veiculoService } from "@/services/veiculoService";
+import { manutencaoService } from "@/services/manutencaoService";
+import { pecaService } from "@/services/pecaService";
+import { pessoaService } from "@/services/pessoaService";
 import { useToast } from "@/hooks/use-toast";
 
 const Frota = () => {
@@ -19,9 +23,46 @@ const Frota = () => {
   const [manutencaoDialogOpen, setManutencaoDialogOpen] = useState(false);
   const [pecaDialogOpen, setPecaDialogOpen] = useState(false);
 
-  const mecanicos = mockPessoas.filter(p => p.tipo === "mecanico");
-  const manutencoesAtivas = mockManutencoes.filter(m => m.status === "em_andamento");
-  const manutencoesHistorico = mockManutencoes.filter(m => m.status === "concluida");
+  const { data: veiculosData, isLoading: veiculosLoading } = useQuery({
+    queryKey: ['veiculos'],
+    queryFn: async () => {
+      const response = await veiculoService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const { data: manutencoesData } = useQuery({
+    queryKey: ['manutencoes'],
+    queryFn: async () => {
+      const response = await manutencaoService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const { data: pecasData } = useQuery({
+    queryKey: ['pecas'],
+    queryFn: async () => {
+      const response = await pecaService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const { data: pessoasData } = useQuery({
+    queryKey: ['pessoas'],
+    queryFn: async () => {
+      const response = await pessoaService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const veiculos = veiculosData?.content || [];
+  const manutencoes = manutencoesData?.content || [];
+  const pecas = pecasData?.content || [];
+  const pessoas = pessoasData?.content || [];
+
+  const mecanicos = pessoas.filter(p => p.tipo === "mecanico");
+  const manutencoesAtivas = manutencoes.filter(m => m.status === "em_andamento");
+  const manutencoesHistorico = manutencoes.filter(m => m.status === "concluida");
 
   const handleCadastroVeiculo = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +81,17 @@ const Frota = () => {
     toast({ title: "Peça cadastrada com sucesso!" });
     setPecaDialogOpen(false);
   };
+
+  if (veiculosLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container py-8 flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -100,7 +152,7 @@ const Frota = () => {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {mockVeiculos.map((veiculo) => (
+              {veiculos.map((veiculo) => (
                 <Card key={veiculo.id} className="animate-slide-in">
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -167,7 +219,7 @@ const Frota = () => {
                           <SelectValue placeholder="Selecione o veículo" />
                         </SelectTrigger>
                         <SelectContent>
-                          {mockVeiculos.map((v) => (
+                          {veiculos.map((v) => (
                             <SelectItem key={v.id} value={v.id.toString()}>
                               {v.placa} - {v.modelo}
                             </SelectItem>
@@ -220,7 +272,7 @@ const Frota = () => {
                 </h3>
                 <div className="grid gap-4 md:grid-cols-2">
                   {manutencoesAtivas.map((manutencao) => {
-                    const veiculo = mockVeiculos.find(v => v.id === manutencao.veiculo_id);
+                    const veiculo = veiculos.find(v => v.id === manutencao.veiculo_id);
                     const mecanico = mecanicos.find(m => m.id === manutencao.mecanico_id);
                     
                     return (
@@ -258,7 +310,7 @@ const Frota = () => {
                 <h3 className="text-lg font-semibold mb-3">Histórico de Manutenções</h3>
                 <div className="grid gap-4 md:grid-cols-2">
                   {manutencoesHistorico.map((manutencao) => {
-                    const veiculo = mockVeiculos.find(v => v.id === manutencao.veiculo_id);
+                    const veiculo = veiculos.find(v => v.id === manutencao.veiculo_id);
                     const mecanico = mecanicos.find(m => m.id === manutencao.mecanico_id);
                     
                     return (
@@ -337,7 +389,7 @@ const Frota = () => {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {mockPecas.map((peca) => (
+              {pecas.map((peca) => (
                 <Card key={peca.id} className="animate-slide-in">
                   <CardHeader>
                     <div className="flex items-start justify-between">

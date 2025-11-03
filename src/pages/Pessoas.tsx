@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,17 +9,26 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Plus, User, Wrench, UserCircle } from "lucide-react";
-import { mockPessoas } from "@/data/mockData";
+import { Users, Plus, User, Wrench, UserCircle, Loader2 } from "lucide-react";
+import { pessoaService } from "@/services/pessoaService";
 import { useToast } from "@/hooks/use-toast";
 
 const Pessoas = () => {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const passageiros = mockPessoas.filter(p => p.tipo === "passageiro");
-  const motoristas = mockPessoas.filter(p => p.tipo === "motorista");
-  const mecanicos = mockPessoas.filter(p => p.tipo === "mecanico");
+  const { data: pessoasData, isLoading } = useQuery({
+    queryKey: ['pessoas'],
+    queryFn: async () => {
+      const response = await pessoaService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const pessoas = pessoasData?.content || [];
+  const passageiros = pessoas.filter(p => p.tipo === "passageiro");
+  const motoristas = pessoas.filter(p => p.tipo === "motorista");
+  const mecanicos = pessoas.filter(p => p.tipo === "mecanico");
 
   const handleCadastro = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +60,7 @@ const Pessoas = () => {
     const badge = getTipoBadge(pessoa.tipo);
     
     return (
-      <Card className="animate-slide-in">
+      <Card key={pessoa.id} className="animate-slide-in">
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
@@ -86,6 +96,17 @@ const Pessoas = () => {
       </Card>
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container py-8 flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -151,7 +172,7 @@ const Pessoas = () => {
           <TabsList>
             <TabsTrigger value="todos">
               <Users className="h-4 w-4 mr-2" />
-              Todos ({mockPessoas.length})
+              Todos ({pessoas.length})
             </TabsTrigger>
             <TabsTrigger value="passageiros">
               <UserCircle className="h-4 w-4 mr-2" />
@@ -169,8 +190,8 @@ const Pessoas = () => {
 
           <TabsContent value="todos">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {mockPessoas.map((pessoa) => (
-                <PessoaCard key={pessoa.id} pessoa={pessoa} />
+              {pessoas.map((pessoa) => (
+                <PessoaCard pessoa={pessoa} />
               ))}
             </div>
           </TabsContent>
@@ -178,7 +199,7 @@ const Pessoas = () => {
           <TabsContent value="passageiros">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {passageiros.map((pessoa) => (
-                <PessoaCard key={pessoa.id} pessoa={pessoa} />
+                <PessoaCard pessoa={pessoa} />
               ))}
             </div>
           </TabsContent>
@@ -186,7 +207,7 @@ const Pessoas = () => {
           <TabsContent value="motoristas">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {motoristas.map((pessoa) => (
-                <PessoaCard key={pessoa.id} pessoa={pessoa} />
+                <PessoaCard pessoa={pessoa} />
               ))}
             </div>
           </TabsContent>
@@ -194,7 +215,7 @@ const Pessoas = () => {
           <TabsContent value="mecanicos">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {mecanicos.map((pessoa) => (
-                <PessoaCard key={pessoa.id} pessoa={pessoa} />
+                <PessoaCard pessoa={pessoa} />
               ))}
             </div>
           </TabsContent>

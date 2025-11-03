@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Bus, Clock, MapPin, ShoppingCart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Bus, Clock, MapPin, ShoppingCart, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { mockLinhas, mockCronogramas, mockViagens } from "@/data/mockData";
+import { linhaService } from "@/services/linhaService";
+import { cronogramaService } from "@/services/cronogramaService";
+import { viagemService } from "@/services/viagemService";
 import ModalDetalhesLinha from "@/components/ModalDetalhesLinha";
 import ModalCompraPassagem from "@/components/ModalCompraPassagem";
 import { Linha } from "@/types/transit";
@@ -13,6 +16,45 @@ const Linhas = () => {
   const [selectedLinha, setSelectedLinha] = useState<Linha | null>(null);
   const [detalhesOpen, setDetalhesOpen] = useState(false);
   const [compraOpen, setCompraOpen] = useState(false);
+
+  const { data: linhasData, isLoading: linhasLoading } = useQuery({
+    queryKey: ['linhas'],
+    queryFn: async () => {
+      const response = await linhaService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const { data: cronogramasData } = useQuery({
+    queryKey: ['cronogramas'],
+    queryFn: async () => {
+      const response = await cronogramaService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const { data: viagensData } = useQuery({
+    queryKey: ['viagens'],
+    queryFn: async () => {
+      const response = await viagemService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const linhas = linhasData?.content || [];
+  const cronogramas = cronogramasData?.content || [];
+  const viagens = viagensData?.content || [];
+
+  if (linhasLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container py-8 flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -28,9 +70,9 @@ const Linhas = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {mockLinhas.map((linha) => {
-            const cronogramas = mockCronogramas.filter(c => c.linha_id === linha.id);
-            const viagemAtiva = mockViagens.find(v => v.linha_id === linha.id);
+          {linhas.map((linha) => {
+            const linhasCronogramas = cronogramas.filter(c => c.linha_id === linha.id);
+            const viagemAtiva = viagens.find(v => v.linha_id === linha.id && v.status === 'em_andamento');
 
             return (
               <Card
@@ -80,7 +122,7 @@ const Linhas = () => {
                       <span className="text-muted-foreground">Próximos horários:</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {cronogramas.slice(0, 3).map((cronograma) => (
+                      {linhasCronogramas.slice(0, 3).map((cronograma) => (
                         <Badge key={cronograma.id} variant="outline">
                           {cronograma.hora_partida}
                         </Badge>

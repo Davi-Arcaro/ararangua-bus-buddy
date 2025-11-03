@@ -1,10 +1,52 @@
-import { Landmark, MapPin } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Landmark, MapPin, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { mockPontosTuristicos, mockParadas } from "@/data/mockData";
+import { pontoTuristicoService } from "@/services/pontoTuristicoService";
+import { pontoParadaService } from "@/services/pontoParadaService";
+import { pontoParadaTuristicoService } from "@/services/pontoParadaTuristicoService";
 
 const Turistico = () => {
+  const { data: turisticosData, isLoading } = useQuery({
+    queryKey: ['pontos-turisticos'],
+    queryFn: async () => {
+      const response = await pontoTuristicoService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const { data: paradasData } = useQuery({
+    queryKey: ['paradas'],
+    queryFn: async () => {
+      const response = await pontoParadaService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const { data: relacaoData } = useQuery({
+    queryKey: ['pontos-parada-turisticos'],
+    queryFn: async () => {
+      const response = await pontoParadaTuristicoService.getAll(0, 100);
+      return response.data;
+    },
+  });
+
+  const pontos = turisticosData?.content || [];
+  const paradas = paradasData?.content || [];
+  const relacoes = relacaoData?.content || [];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container py-8 flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -19,9 +61,12 @@ const Turistico = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {mockPontosTuristicos.map((ponto, index) => {
-            // Simulação: vincular paradas próximas aos pontos turísticos
-            const paradasProximas = mockParadas.slice(index, index + 2);
+          {pontos.map((ponto) => {
+            const relacoesParada = relacoes.filter(r => r.ponto_turistico_id === ponto.id);
+            const paradasProximas = relacoesParada
+              .map(r => paradas.find(p => p.id === r.ponto_parada_id))
+              .filter(Boolean)
+              .slice(0, 2);
 
             return (
               <Card
@@ -45,23 +90,26 @@ const Turistico = () => {
                       <span>Paradas mais próximas:</span>
                     </div>
                     <div className="space-y-2">
-                      {paradasProximas.map((parada) => (
-                        <div
-                          key={parada.id}
-                          className="flex items-center justify-between p-3 bg-muted rounded-lg"
-                        >
-                          <span className="text-sm font-medium">{parada.nome}</span>
-                          <Badge variant="secondary">~200m</Badge>
-                        </div>
-                      ))}
+                      {paradasProximas.map((parada) => {
+                        const relacao = relacoesParada.find(r => r.ponto_parada_id === parada!.id);
+                        return (
+                          <div
+                            key={parada!.id}
+                            className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                          >
+                            <span className="text-sm font-medium">{parada!.nome}</span>
+                            <Badge variant="secondary">~{relacao?.distancia_metros || 200}m</Badge>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    <Badge>L101</Badge>
-                    <Badge>L102</Badge>
-                    {index % 2 === 0 && <Badge>L103</Badge>}
-                  </div>
+                  {paradasProximas.length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      Nenhuma parada próxima cadastrada
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             );
