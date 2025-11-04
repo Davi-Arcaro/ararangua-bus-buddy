@@ -62,9 +62,9 @@ const Turistico = () => {
 
         <div className="grid gap-6 md:grid-cols-2">
           {pontos.map((ponto) => {
-            const relacoesParada = relacoes.filter(r => r.ponto_turistico_id === ponto.id);
+            const relacoesParada = relacoes.filter(r => r.idPontoTuristico === ponto.id);
             const paradasProximas = relacoesParada
-              .map(r => paradas.find(p => p.id === r.ponto_parada_id))
+              .map(r => paradas.find(p => p.id === r.idPontoParada))
               .filter(Boolean)
               .slice(0, 2);
 
@@ -91,14 +91,14 @@ const Turistico = () => {
                     </div>
                     <div className="space-y-2">
                       {paradasProximas.map((parada) => {
-                        const relacao = relacoesParada.find(r => r.ponto_parada_id === parada!.id);
+                        const relacao = relacoesParada.find(r => r.idPontoParada === parada!.id);
                         return (
                           <div
                             key={parada!.id}
                             className="flex items-center justify-between p-3 bg-muted rounded-lg"
                           >
                             <span className="text-sm font-medium">{parada!.nome}</span>
-                            <Badge variant="secondary">~{relacao?.distancia_metros || 200}m</Badge>
+                            <Badge variant="secondary">~200m</Badge>
                           </div>
                         );
                       })}

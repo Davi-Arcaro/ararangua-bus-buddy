@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Clock } from "lucide-react";
-import { Linha, CheckpointRota, Parada } from "@/types/transit";
-import { mockCheckpointsRota, mockParadas } from "@/data/mockData";
+import { MapPin, Check, Clock } from "lucide-react";
+import { Linha } from "@/types/transit";
+import { mockItinerarios } from "@/data/mockData";
 
 interface ModalDetalhesLinhaProps {
   linha: Linha | null;
@@ -13,73 +13,56 @@ interface ModalDetalhesLinhaProps {
 const ModalDetalhesLinha = ({ linha, open, onOpenChange }: ModalDetalhesLinhaProps) => {
   if (!linha) return null;
 
-  const checkpoints = mockCheckpointsRota[linha.id] || [];
-  
-  const getParadaNome = (paradaId: number) => {
-    const parada = mockParadas.find(p => p.id === paradaId);
-    return parada?.nome || "Parada desconhecida";
-  };
+  const itinerariosLinha = mockItinerarios
+    .filter(i => i.linha?.id === linha.id)
+    .sort((a, b) => a.ordem - b.ordem);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div
-              className="p-2 rounded-lg"
-              style={{ backgroundColor: linha.cor }}
-            >
-              <Clock className="h-5 w-5 text-white" />
+            <div className="p-2 rounded-lg" style={{ backgroundColor: linha.cor }}>
+              <MapPin className="h-5 w-5 text-white" />
             </div>
             <div>
-              <DialogTitle className="text-xl">{linha.nome}</DialogTitle>
-              <Badge variant="secondary" className="mt-1">
-                {linha.codigo}
-              </Badge>
+              <DialogTitle>{linha.nome}</DialogTitle>
+              <Badge variant="secondary" className="mt-1">{linha.codigo}</Badge>
             </div>
           </div>
         </DialogHeader>
 
-        <div className="space-y-4 mt-4">
-          <div>
-            <h3 className="text-lg font-semibold mb-3">Rota e Checkpoints em Tempo Real</h3>
-            <div className="space-y-2">
-              {checkpoints.map((checkpoint, index) => (
-                <div
-                  key={checkpoint.id}
-                  className={`flex items-center justify-between p-3 rounded-lg transition-all ${
-                    checkpoint.passado
-                      ? "bg-secondary/10 border border-secondary/30"
-                      : "bg-muted"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    {checkpoint.passado ? (
-                      <CheckCircle2 className="h-5 w-5 text-secondary" />
-                    ) : (
-                      <Circle className="h-5 w-5 text-muted-foreground" />
-                    )}
-                    <div>
-                      <p className="font-medium">{getParadaNome(checkpoint.parada_id)}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Horário: {checkpoint.hora_prevista}
-                      </p>
+        <div className="space-y-4 py-4">
+          <h3 className="font-semibold flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            Percurso da Linha
+          </h3>
+
+          {itinerariosLinha.length > 0 ? (
+            <div className="space-y-3">
+              {itinerariosLinha.map((itinerario, index) => {
+                const parada = itinerario.pontoParada;
+                const isFirst = index === 0;
+                const isLast = index === itinerariosLinha.length - 1;
+
+                return (
+                  <div key={itinerario.id} className="flex gap-3">
+                    <div className="flex flex-col items-center">
+                      <div className={`rounded-full p-1.5 ${isFirst || isLast ? "bg-primary" : "bg-muted-foreground"}`}>
+                        {isFirst || isLast ? <Check className="h-3 w-3 text-primary-foreground" /> : <div className="h-3 w-3" />}
+                      </div>
+                      {!isLast && <div className="w-0.5 h-8 bg-muted-foreground/30 my-1" />}
+                    </div>
+                    <div className="flex-1 pb-2">
+                      <p className="font-medium">{parada?.nome}</p>
+                      <p className="text-sm text-muted-foreground">Parada {index + 1} de {itinerariosLinha.length}</p>
                     </div>
                   </div>
-                  {checkpoint.passado ? (
-                    <Badge className="bg-secondary">Concluído</Badge>
-                  ) : (
-                    <Badge variant="outline">Pendente</Badge>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
-          </div>
-
-          {checkpoints.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>Nenhum checkpoint disponível para esta linha no momento.</p>
-            </div>
+          ) : (
+            <p className="text-muted-foreground text-center py-4">Nenhum itinerário cadastrado para esta linha</p>
           )}
         </div>
       </DialogContent>

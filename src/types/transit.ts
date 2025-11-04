@@ -1,8 +1,18 @@
+export interface Cidade {
+  id: number;
+  nome: string;
+  estado: string;
+  version?: number;
+}
+
 export interface Linha {
   id: number;
   nome: string;
   codigo: string;
   cor: string;
+  ativo?: boolean;
+  tempoPercursoEstimado?: number;
+  version?: number;
 }
 
 export interface Parada {
@@ -10,70 +20,105 @@ export interface Parada {
   nome: string;
   latitude: string;
   longitude: string;
-  cidade_id: number;
+  ativo?: boolean;
+  cidade?: Cidade;
+  pontosTuristicosProximos?: PontoTuristico[];
+  version?: number;
 }
 
 export interface PontoTuristico {
   id: number;
   nome: string;
   descricao: string;
+  latitude?: string;
+  longitude?: string;
+  ativo?: boolean;
+  pontosParadaProximos?: Parada[];
+  version?: number;
 }
 
 export interface Cronograma {
   id: number;
-  linha_id: number;
-  hora_partida: string;
-  tipo_dia: string;
+  linha?: Linha;
+  horaPartida: string;
+  tipoDia?: number;
+  version?: number;
+}
+
+export interface TipoVeiculo {
+  id: number;
+  descricao: string;
+  ativo?: boolean;
+  veiculos?: Veiculo[];
+  version?: number;
 }
 
 export interface Viagem {
   id: number;
-  linha_id: number;
-  veiculo_id: number;
-  status: 'agendada' | 'em_andamento' | 'concluida' | 'cancelada';
-  data_partida_prevista: string;
-  data_partida_real?: string;
-  data_chegada_prevista?: string;
-  data_chegada_real?: string;
-  progresso?: number;
+  linha?: Linha;
+  veiculo?: Veiculo;
+  motorista?: Pessoa;
+  dataPartidaReal?: string;
+  dataPartidaPrevista?: string;
+  dataChegadaPrevista?: string;
+  dataChegadaReal?: string;
+  status?: number;
+  passagens?: Compra[];
+  version?: number;
 }
 
-export interface CheckpointRota {
+export interface Itinerario {
   id: number;
-  parada_id: number;
-  hora_prevista: string;
-  passado: boolean;
+  linha?: Linha;
+  pontoParada?: Parada;
+  ordem: number;
+  version?: number;
 }
 
 export interface Veiculo {
   id: number;
   placa: string;
   modelo: string;
-  ano: number;
+  chassi?: string;
+  anoFabricacao?: number;
   capacidade: number;
-  em_manutencao: boolean;
-  ultima_manutencao?: string;
+  ativo?: boolean;
+  tipoVeiculo?: TipoVeiculo;
+  viagens?: Viagem[];
+  version?: number;
+}
+
+export interface ManutencaoPeca {
+  id: number;
+  manutencao?: Manutencao;
+  peca?: Peca;
+  quantidade: number;
+  version?: number;
 }
 
 export interface Manutencao {
   id: number;
-  veiculo_id: number;
-  mecanico_id: number;
+  veiculo?: Veiculo;
+  mecanico?: Pessoa;
   tipo: string;
   descricao: string;
-  status: 'agendada' | 'em_andamento' | 'concluida';
-  data_inicio: string;
-  data_fim?: string;
+  status?: number;
+  dataInicio: string;
+  dataFim?: string;
   custo?: number;
+  pecasUsadas?: ManutencaoPeca[];
+  version?: number;
 }
 
 export interface Peca {
   id: number;
   nome: string;
   codigo: string;
-  quantidade_estoque: number;
-  preco_unitario: number;
+  quantidadeEstoque: number;
+  precoUnitario: number;
   fornecedor: string;
+  ativo?: boolean;
+  version?: number;
 }
 
 export interface Pessoa {
@@ -82,24 +127,48 @@ export interface Pessoa {
   cpf: string;
   email: string;
   telefone: string;
-  tipo: 'passageiro' | 'motorista' | 'mecanico';
-  data_cadastro: string;
+  tipo?: number;
+  dataNascimento?: string;
+  dataCadastro: string;
+  ativo?: boolean;
+  cnh?: string;
+  categoriaCnh?: string;
+  version?: number;
+}
+
+export interface MetodoPagamento {
+  id: number;
+  nome: string;
+  ativo: boolean;
+  version?: number;
 }
 
 export interface TipoPassagem {
   id: number;
-  nome: string;
   descricao: string;
-  preco: number;
+  passagens?: Compra[];
+  version?: number;
 }
 
 export interface Compra {
   id: number;
-  passageiro_id: number;
-  linha_id: number;
-  tipo_passagem_id: number;
-  metodo_pagamento: 'pix' | 'cartao_credito' | 'cartao_debito' | 'dinheiro';
-  valor_total: number;
-  status: 'pendente' | 'aprovada' | 'cancelada';
-  data_compra: string;
+  passageiro?: Pessoa;
+  viagem?: Viagem;
+  tipoPassagem?: TipoPassagem;
+  metodoPagamento?: MetodoPagamento;
+  valorTotal: number;
+  status?: number;
+  dataCompra: string;
+  version?: number;
+}
+
+export interface PontoParadaTuristico {
+  idPontoParada: number;
+  idPontoTuristico: number;
+}
+
+export interface ProgressoViagem {
+  data: string;
+  idViagem: number;
+  idPontoParada: number;
 }

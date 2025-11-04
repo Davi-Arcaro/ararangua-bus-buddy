@@ -1,11 +1,5 @@
 import { api, PaginatedResponse } from './api';
-
-export interface ManutencaoPeca {
-  id: number;
-  manutencao_id: number;
-  peca_id: number;
-  quantidade: number;
-}
+import { ManutencaoPeca } from '@/types/transit';
 
 export const manutencaoPecaService = {
   getAll: (page = 0, size = 10) => 

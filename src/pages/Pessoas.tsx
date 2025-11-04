@@ -26,9 +26,9 @@ const Pessoas = () => {
   });
 
   const pessoas = pessoasData?.content || [];
-  const passageiros = pessoas.filter(p => p.tipo === "passageiro");
-  const motoristas = pessoas.filter(p => p.tipo === "motorista");
-  const mecanicos = pessoas.filter(p => p.tipo === "mecanico");
+  const passageiros = pessoas.filter(p => p.tipo === 0);
+  const motoristas = pessoas.filter(p => p.tipo === 1);
+  const mecanicos = pessoas.filter(p => p.tipo === 2);
 
   const handleCadastro = (e: React.FormEvent) => {
     e.preventDefault();

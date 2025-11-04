@@ -1,11 +1,5 @@
 import { api, PaginatedResponse } from './api';
-
-export interface Itinerario {
-  id: number;
-  linha_id: number;
-  ponto_parada_id: number;
-  ordem: number;
-}
+import { Itinerario } from '@/types/transit';
 
 export const itinerarioService = {
   getAll: (page = 0, size = 10) => 

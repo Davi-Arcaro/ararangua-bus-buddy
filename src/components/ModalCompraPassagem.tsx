@@ -95,12 +95,8 @@ const ModalCompraPassagem = ({ linha, open, onOpenChange }: ModalCompraPassagemP
                     <Label htmlFor={`tipo-${tipo.id}`} className="flex-1 cursor-pointer">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="font-medium">{tipo.nome}</p>
-                          <p className="text-sm text-muted-foreground">{tipo.descricao}</p>
+                          <p className="font-medium text-sm">{tipo.descricao}</p>
                         </div>
-                        <Badge variant="secondary">
-                          {tipo.preco === 0 ? "Grátis" : `R$ ${tipo.preco.toFixed(2)}`}
-                        </Badge>
                       </div>
                     </Label>
                   </div>
@@ -171,19 +167,11 @@ const ModalCompraPassagem = ({ linha, open, onOpenChange }: ModalCompraPassagemP
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Tipo de Passagem:</span>
-                  <span className="font-medium">{tipoSelecionado?.nome}</span>
+                  <span className="font-medium text-sm">{tipoSelecionado?.descricao}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Pagamento:</span>
                   <span className="font-medium capitalize">{metodoPagamento?.replace("_", " ")}</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t">
-                  <span className="font-semibold">Total:</span>
-                  <span className="font-semibold text-primary">
-                    {tipoSelecionado?.preco === 0
-                      ? "Grátis"
-                      : `R$ ${tipoSelecionado?.preco.toFixed(2)}`}
-                  </span>
                 </div>
               </div>
             </div>

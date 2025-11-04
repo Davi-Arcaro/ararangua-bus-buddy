@@ -71,8 +71,8 @@ const Linhas = () => {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {linhas.map((linha) => {
-            const linhasCronogramas = cronogramas.filter(c => c.linha_id === linha.id);
-            const viagemAtiva = viagens.find(v => v.linha_id === linha.id && v.status === 'em_andamento');
+            const linhasCronogramas = cronogramas.filter(c => c.linha?.id === linha.id);
+            const viagemAtiva = viagens.find(v => v.linha?.id === linha.id && v.status === 1);
 
             return (
               <Card
@@ -100,18 +100,12 @@ const Linhas = () => {
                 <CardContent className="space-y-4">
                   {viagemAtiva && (
                     <div className="p-3 bg-muted rounded-lg">
-                      <div className="flex items-center gap-2 text-sm font-medium text-secondary mb-2">
+                      <div className="flex items-center gap-2 text-sm font-medium text-secondary">
                         <div className="h-2 w-2 rounded-full bg-secondary animate-pulse-slow" />
                         Ônibus em operação
                       </div>
-                      <div className="w-full bg-background rounded-full h-2">
-                        <div
-                          className="h-2 rounded-full bg-gradient-transit transition-all duration-500"
-                          style={{ width: `${viagemAtiva.progresso}%` }}
-                        />
-                      </div>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Progresso: {viagemAtiva.progresso}%
+                        Partida: {viagemAtiva.dataPartidaPrevista ? new Date(viagemAtiva.dataPartidaPrevista).toLocaleTimeString() : 'N/A'}
                       </p>
                     </div>
                   )}
@@ -124,7 +118,7 @@ const Linhas = () => {
                     <div className="flex flex-wrap gap-2">
                       {linhasCronogramas.slice(0, 3).map((cronograma) => (
                         <Badge key={cronograma.id} variant="outline">
-                          {cronograma.hora_partida}
+                          {cronograma.horaPartida}
                         </Badge>
                       ))}
                     </div>

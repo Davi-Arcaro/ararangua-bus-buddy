@@ -1,10 +1,5 @@
 import { api, PaginatedResponse } from './api';
-
-export interface MetodoPagamento {
-  id: number;
-  nome: string;
-  ativo: boolean;
-}
+import { MetodoPagamento } from '@/types/transit';
 
 export const metodoPagamentoService = {
   getAll: (page = 0, size = 10) => 

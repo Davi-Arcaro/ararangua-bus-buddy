@@ -1,10 +1,5 @@
 import { api, PaginatedResponse } from './api';
-
-export interface Cidade {
-  id: number;
-  nome: string;
-  estado: string;
-}
+import { Cidade } from '@/types/transit';
 
 export const cidadeService = {
   getAll: (page = 0, size = 10) => 

@@ -60,9 +60,9 @@ const Frota = () => {
   const pecas = pecasData?.content || [];
   const pessoas = pessoasData?.content || [];
 
-  const mecanicos = pessoas.filter(p => p.tipo === "mecanico");
-  const manutencoesAtivas = manutencoes.filter(m => m.status === "em_andamento");
-  const manutencoesHistorico = manutencoes.filter(m => m.status === "concluida");
+  const mecanicos = pessoas.filter(p => p.tipo === 2);
+  const manutencoesAtivas = manutencoes.filter(m => m.status === 1);
+  const manutencoesHistorico = manutencoes.filter(m => m.status === 2);
 
   const handleCadastroVeiculo = (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,7 +170,7 @@ const Frota = () => {
                   <CardContent className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Ano:</span>
-                      <span className="font-medium">{veiculo.ano}</span>
+                      <span className="font-medium">{veiculo.anoFabricacao}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Capacidade:</span>
@@ -178,20 +178,8 @@ const Frota = () => {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Status:</span>
-                      {veiculo.em_manutencao ? (
-                        <Badge variant="destructive" className="flex items-center gap-1">
-                          <AlertCircle className="h-3 w-3" />
-                          Em Manutenção
-                        </Badge>
-                      ) : (
-                        <Badge className="bg-secondary">Operacional</Badge>
-                      )}
+                      <Badge className="bg-secondary">Operacional</Badge>
                     </div>
-                    {veiculo.ultima_manutencao && (
-                      <div className="text-xs text-muted-foreground pt-2 border-t">
-                        Última manutenção: {new Date(veiculo.ultima_manutencao).toLocaleDateString()}
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -272,8 +260,8 @@ const Frota = () => {
                 </h3>
                 <div className="grid gap-4 md:grid-cols-2">
                   {manutencoesAtivas.map((manutencao) => {
-                    const veiculo = veiculos.find(v => v.id === manutencao.veiculo_id);
-                    const mecanico = mecanicos.find(m => m.id === manutencao.mecanico_id);
+                    const veiculo = manutencao.veiculo;
+                    const mecanico = manutencao.mecanico;
                     
                     return (
                       <Card key={manutencao.id} className="animate-slide-in">
@@ -292,7 +280,7 @@ const Frota = () => {
                             Mecânico: {mecanico?.nome}
                           </div>
                           <div className="text-sm text-muted-foreground">
-                            Início: {new Date(manutencao.data_inicio).toLocaleDateString()}
+                            Início: {new Date(manutencao.dataInicio).toLocaleDateString()}
                           </div>
                           {manutencao.custo && (
                             <div className="text-sm font-medium">
@@ -310,8 +298,8 @@ const Frota = () => {
                 <h3 className="text-lg font-semibold mb-3">Histórico de Manutenções</h3>
                 <div className="grid gap-4 md:grid-cols-2">
                   {manutencoesHistorico.map((manutencao) => {
-                    const veiculo = veiculos.find(v => v.id === manutencao.veiculo_id);
-                    const mecanico = mecanicos.find(m => m.id === manutencao.mecanico_id);
+                    const veiculo = manutencao.veiculo;
+                    const mecanico = manutencao.mecanico;
                     
                     return (
                       <Card key={manutencao.id} className="opacity-80">
@@ -330,7 +318,7 @@ const Frota = () => {
                             Mecânico: {mecanico?.nome}
                           </div>
                           <div className="text-sm text-muted-foreground">
-                            Período: {new Date(manutencao.data_inicio).toLocaleDateString()} - {manutencao.data_fim && new Date(manutencao.data_fim).toLocaleDateString()}
+                            Período: {new Date(manutencao.dataInicio).toLocaleDateString()} - {manutencao.dataFim && new Date(manutencao.dataFim).toLocaleDateString()}
                           </div>
                           {manutencao.custo && (
                             <div className="text-sm font-medium">
@@ -407,18 +395,18 @@ const Frota = () => {
                   <CardContent className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Estoque:</span>
-                      <span className={`font-medium ${peca.quantidade_estoque < 10 ? 'text-destructive' : ''}`}>
-                        {peca.quantidade_estoque} unidades
+                      <span className={`font-medium ${peca.quantidadeEstoque < 10 ? 'text-destructive' : ''}`}>
+                        {peca.quantidadeEstoque} unidades
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Preço:</span>
-                      <span className="font-medium">R$ {peca.preco_unitario.toFixed(2)}</span>
+                      <span className="font-medium">R$ {peca.precoUnitario.toFixed(2)}</span>
                     </div>
                     <div className="text-sm text-muted-foreground pt-2 border-t">
                       Fornecedor: {peca.fornecedor}
                     </div>
-                    {peca.quantidade_estoque < 10 && (
+                    {peca.quantidadeEstoque < 10 && (
                       <Badge variant="destructive" className="w-full justify-center">
                         <AlertCircle className="h-3 w-3 mr-1" />
                         Estoque baixo

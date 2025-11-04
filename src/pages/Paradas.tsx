@@ -63,8 +63,8 @@ const Paradas = () => {
 
         <div className="grid gap-6 md:grid-cols-2">
           {paradas.map((parada) => {
-            const relacao = relacoes.find(r => r.ponto_parada_id === parada.id);
-            const pontoProximo = relacao ? turisticos.find(t => t.id === relacao.ponto_turistico_id) : null;
+            const relacao = relacoes.find(r => r.idPontoParada === parada.id);
+            const pontoProximo = relacao ? turisticos.find(t => t.id === relacao.idPontoTuristico) : null;
 
             return (
               <Card

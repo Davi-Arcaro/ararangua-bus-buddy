@@ -113,7 +113,7 @@ const Index = () => {
 
         <div className="grid gap-6 md:grid-cols-3">
           {viagensAtivas.map((viagem, index) => {
-            const linha = mockLinhas.find(l => l.id === viagem.linha_id);
+            const linha = viagem.linha;
             if (!linha) return null;
 
             return (
@@ -143,16 +143,10 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Progresso</span>
-                      <span className="font-medium">{viagem.progresso}%</span>
+                    <div className="text-sm text-muted-foreground">
+                      Partida prevista: {viagem.dataPartidaPrevista ? new Date(viagem.dataPartidaPrevista).toLocaleTimeString() : 'N/A'}
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div
-                        className="h-2 rounded-full bg-gradient-transit transition-all duration-500"
-                        style={{ width: `${viagem.progresso}%` }}
-                      />
-                    </div>
+                    <Badge className="bg-secondary">Em operação</Badge>
                   </div>
                 </CardContent>
               </Card>
