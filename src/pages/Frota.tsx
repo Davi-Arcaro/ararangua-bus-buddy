@@ -367,8 +367,8 @@ const Frota = () => {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="fornecedor">Fornecedor</Label>
-                      <Input id="fornecedor" placeholder="Nome do fornecedor" required />
+                      <Label htmlFor="fabricante">Fabricante</Label>
+                      <Input id="fabricante" placeholder="Nome do fabricante" required />
                     </div>
                     <Button type="submit" className="w-full">Cadastrar</Button>
                   </form>
@@ -404,7 +404,7 @@ const Frota = () => {
                       <span className="font-medium">R$ {peca.precoUnitario.toFixed(2)}</span>
                     </div>
                     <div className="text-sm text-muted-foreground pt-2 border-t">
-                      Fornecedor: {peca.fornecedor}
+                      Fabricante: {peca.fabricante}
                     </div>
                     {peca.quantidadeEstoque < 10 && (
                       <Badge variant="destructive" className="w-full justify-center">

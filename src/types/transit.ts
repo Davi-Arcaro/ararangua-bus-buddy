@@ -10,7 +10,7 @@ export interface Linha {
   nome: string;
   codigo: string;
   cor: string;
-  ativo?: boolean;
+  ativo: boolean;
   tempoPercursoEstimado?: number;
   version?: number;
 }
@@ -20,7 +20,7 @@ export interface Parada {
   nome: string;
   latitude: string;
   longitude: string;
-  ativo?: boolean;
+  ativo: boolean;
   cidade?: Cidade;
   pontosTuristicosProximos?: PontoTuristico[];
   version?: number;
@@ -32,7 +32,7 @@ export interface PontoTuristico {
   descricao: string;
   latitude?: string;
   longitude?: string;
-  ativo?: boolean;
+  ativo: boolean;
   pontosParadaProximos?: Parada[];
   version?: number;
 }
@@ -48,20 +48,20 @@ export interface Cronograma {
 export interface TipoVeiculo {
   id: number;
   descricao: string;
-  ativo?: boolean;
+  ativo: boolean;
   veiculos?: Veiculo[];
   version?: number;
 }
 
 export interface Viagem {
   id: number;
+  dataPartidaReal?: string;
+  dataPartidaPrevista: string;
+  dataChegadaPrevista: string;
+  dataChegadaReal?: string;
   linha?: Linha;
   veiculo?: Veiculo;
   motorista?: Pessoa;
-  dataPartidaReal?: string;
-  dataPartidaPrevista?: string;
-  dataChegadaPrevista?: string;
-  dataChegadaReal?: string;
   status?: number;
   passagens?: Compra[];
   version?: number;
@@ -78,11 +78,11 @@ export interface Itinerario {
 export interface Veiculo {
   id: number;
   placa: string;
-  modelo: string;
   chassi?: string;
-  anoFabricacao?: number;
+  modelo?: string;
+  anoFabricacao: number;
   capacidade: number;
-  ativo?: boolean;
+  ativo: boolean;
   tipoVeiculo?: TipoVeiculo;
   viagens?: Viagem[];
   version?: number;
@@ -116,8 +116,8 @@ export interface Peca {
   codigo: string;
   quantidadeEstoque: number;
   precoUnitario: number;
-  fornecedor: string;
-  ativo?: boolean;
+  fabricante: string;
+  ativo: boolean;
   version?: number;
 }
 
@@ -127,12 +127,14 @@ export interface Pessoa {
   cpf: string;
   email: string;
   telefone: string;
-  tipo?: number;
+  tipo: number;
   dataNascimento?: string;
   dataCadastro: string;
-  ativo?: boolean;
+  ativo: boolean;
   cnh?: string;
   categoriaCnh?: string;
+  createdAt?: string;
+  updatedAt?: string;
   version?: number;
 }
 

@@ -1,11 +1,11 @@
 import { Linha, Parada, PontoTuristico, Cronograma, Viagem, Itinerario, Veiculo, Manutencao, Peca, Pessoa, TipoPassagem, Compra, Cidade } from "@/types/transit";
 
 export const mockLinhas: Linha[] = [
-  { id: 1, nome: "Centro - Morro dos Conventos", codigo: "L101", cor: "#0066CC" },
-  { id: 2, nome: "Centro - Ilha dos Golfinhos", codigo: "L102", cor: "#00AA66" },
-  { id: 3, nome: "Centro - Ilhas", codigo: "L103", cor: "#FF6600" },
-  { id: 4, nome: "Centro - Aeroporto Regional", codigo: "L104", cor: "#9933CC" },
-  { id: 5, nome: "Circular Centro", codigo: "L201", cor: "#CC3366" },
+  { id: 1, nome: "Centro - Morro dos Conventos", codigo: "L101", cor: "#0066CC", ativo: true },
+  { id: 2, nome: "Centro - Ilha dos Golfinhos", codigo: "L102", cor: "#00AA66", ativo: true },
+  { id: 3, nome: "Centro - Ilhas", codigo: "L103", cor: "#FF6600", ativo: true },
+  { id: 4, nome: "Centro - Aeroporto Regional", codigo: "L104", cor: "#9933CC", ativo: true },
+  { id: 5, nome: "Circular Centro", codigo: "L201", cor: "#CC3366", ativo: true },
 ];
 
 const mockCidade: Cidade = { id: 1, nome: "Araranguá", estado: "SC" };
@@ -23,22 +23,26 @@ export const mockPontosTuristicos: PontoTuristico[] = [
   {
     id: 1,
     nome: "Morro dos Conventos",
-    descricao: "Ponto turístico histórico com farol e vista panorâmica do oceano. Um dos principais cartões postais da região."
+    descricao: "Ponto turístico histórico com farol e vista panorâmica do oceano. Um dos principais cartões postais da região.",
+    ativo: true
   },
   {
     id: 2,
     nome: "Praia das Ilhas",
-    descricao: "Praia tranquila e preservada, ideal para caminhadas e contemplação da natureza."
+    descricao: "Praia tranquila e preservada, ideal para caminhadas e contemplação da natureza.",
+    ativo: true
   },
   {
     id: 3,
     nome: "Museu Histórico de Araranguá",
-    descricao: "Acervo que conta a história e cultura da região através de objetos e documentos históricos."
+    descricao: "Acervo que conta a história e cultura da região através de objetos e documentos históricos.",
+    ativo: true
   },
   {
     id: 4,
     nome: "Praça Hercílio Luz",
-    descricao: "Praça central histórica com eventos culturais, fair de artesanato e gastronomia local."
+    descricao: "Praça central histórica com eventos culturais, fair de artesanato e gastronomia local.",
+    ativo: true
   },
 ];
 
@@ -56,18 +60,21 @@ export const mockViagens: Viagem[] = [
     id: 1,
     linha: mockLinhas[0],
     dataPartidaPrevista: new Date().toISOString(),
+    dataChegadaPrevista: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
     status: 1
   },
   {
     id: 2,
     linha: mockLinhas[1],
     dataPartidaPrevista: new Date().toISOString(),
+    dataChegadaPrevista: new Date(Date.now() + 1.5 * 60 * 60 * 1000).toISOString(),
     status: 1
   },
   {
     id: 3,
     linha: mockLinhas[4],
     dataPartidaPrevista: new Date().toISOString(),
+    dataChegadaPrevista: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
     status: 1
   },
 ];
@@ -98,13 +105,13 @@ export const mockManutencoes: Manutencao[] = [
 ];
 
 export const mockPecas: Peca[] = [
-  { id: 1, nome: "Óleo de Motor 15W40", codigo: "OL-001", quantidadeEstoque: 45, precoUnitario: 35.90, fornecedor: "Petrobrás", ativo: true },
-  { id: 2, nome: "Filtro de Óleo", codigo: "FL-002", quantidadeEstoque: 32, precoUnitario: 28.50, fornecedor: "Tecfil", ativo: true },
-  { id: 3, nome: "Pastilha de Freio", codigo: "FR-003", quantidadeEstoque: 18, precoUnitario: 120.00, fornecedor: "Frasle", ativo: true },
-  { id: 4, nome: "Disco de Freio", codigo: "FR-004", quantidadeEstoque: 12, precoUnitario: 280.00, fornecedor: "Frasle", ativo: true },
-  { id: 5, nome: "Pneu 275/80R22.5", codigo: "PN-005", quantidadeEstoque: 8, precoUnitario: 1250.00, fornecedor: "Pirelli", ativo: true },
-  { id: 6, nome: "Bateria 150Ah", codigo: "BT-006", quantidadeEstoque: 6, precoUnitario: 850.00, fornecedor: "Moura", ativo: true },
-  { id: 7, nome: "Lâmpada LED H4", codigo: "IL-007", quantidadeEstoque: 24, precoUnitario: 45.00, fornecedor: "Philips", ativo: true },
+  { id: 1, nome: "Óleo de Motor 15W40", codigo: "OL-001", quantidadeEstoque: 45, precoUnitario: 35.90, fabricante: "Petrobrás", ativo: true },
+  { id: 2, nome: "Filtro de Óleo", codigo: "FL-002", quantidadeEstoque: 32, precoUnitario: 28.50, fabricante: "Tecfil", ativo: true },
+  { id: 3, nome: "Pastilha de Freio", codigo: "FR-003", quantidadeEstoque: 18, precoUnitario: 120.00, fabricante: "Frasle", ativo: true },
+  { id: 4, nome: "Disco de Freio", codigo: "FR-004", quantidadeEstoque: 12, precoUnitario: 280.00, fabricante: "Frasle", ativo: true },
+  { id: 5, nome: "Pneu 275/80R22.5", codigo: "PN-005", quantidadeEstoque: 8, precoUnitario: 1250.00, fabricante: "Pirelli", ativo: true },
+  { id: 6, nome: "Bateria 150Ah", codigo: "BT-006", quantidadeEstoque: 6, precoUnitario: 850.00, fabricante: "Moura", ativo: true },
+  { id: 7, nome: "Lâmpada LED H4", codigo: "IL-007", quantidadeEstoque: 24, precoUnitario: 45.00, fabricante: "Philips", ativo: true },
 ];
 
 export const mockPessoas: Pessoa[] = [
