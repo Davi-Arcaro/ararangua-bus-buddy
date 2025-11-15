@@ -55,10 +55,10 @@ const Frota = () => {
     },
   });
 
-  const veiculos = veiculosData?.content || [];
-  const manutencoes = manutencoesData?.content || [];
-  const pecas = pecasData?.content || [];
-  const pessoas = pessoasData?.content || [];
+  const veiculos = veiculosData || [];
+  const manutencoes = manutencoesData || [];
+  const pecas = pecasData || [];
+  const pessoas = pessoasData || [];
 
   const mecanicos = pessoas.filter(p => p.tipo === 2);
   const manutencoesAtivas = manutencoes.filter(m => m.status === 1);

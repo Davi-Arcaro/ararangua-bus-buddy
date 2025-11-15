@@ -33,9 +33,9 @@ const Paradas = () => {
     },
   });
 
-  const paradas = paradasData?.content || [];
-  const turisticos = turisticosData?.content || [];
-  const relacoes = relacaoData?.content || [];
+  const paradas = paradasData || [];
+  const turisticos = turisticosData || [];
+  const relacoes = relacaoData || [];
 
   if (isLoading) {
     return (

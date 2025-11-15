@@ -17,11 +17,3 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-export interface PaginatedResponse<T> {
-  content: T[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-}
