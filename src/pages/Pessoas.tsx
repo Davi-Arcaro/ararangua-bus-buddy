@@ -25,7 +25,7 @@ const Pessoas = () => {
     },
   });
 
-  const pessoas = pessoasData?.content || [];
+  const pessoas = pessoasData || [];
   const passageiros = pessoas.filter(p => p.tipo === 0);
   const motoristas = pessoas.filter(p => p.tipo === 1);
   const mecanicos = pessoas.filter(p => p.tipo === 2);

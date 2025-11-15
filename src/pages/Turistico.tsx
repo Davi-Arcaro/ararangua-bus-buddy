@@ -32,9 +32,9 @@ const Turistico = () => {
     },
   });
 
-  const pontos = turisticosData?.content || [];
-  const paradas = paradasData?.content || [];
-  const relacoes = relacaoData?.content || [];
+  const pontos = turisticosData || [];
+  const paradas = paradasData || [];
+  const relacoes = relacaoData || [];
 
   if (isLoading) {
     return (

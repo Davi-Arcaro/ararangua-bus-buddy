@@ -1,9 +1,9 @@
-import { api, PaginatedResponse } from './api';
+import { api } from './api';
 import { TipoPassagem } from '@/types/transit';
 
 export const tipoPassagemService = {
-  getAll: (page = 0, size = 10) => 
-    api.get<PaginatedResponse<TipoPassagem>>('/tipos-passagem', { params: { page, size } }),
+  getAll: (page = 0, size = 20) => 
+    api.get<TipoPassagem[]>('/tipos-passagem', { params: { page, size } }),
   
   getById: (id: number) => 
     api.get<TipoPassagem>(`/tipos-passagem/${id}`),

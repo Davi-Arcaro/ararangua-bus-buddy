@@ -1,9 +1,9 @@
-import { api, PaginatedResponse } from './api';
+import { api } from './api';
 import { Compra } from '@/types/transit';
 
 export const passagemService = {
-  getAll: (page = 0, size = 10) => 
-    api.get<PaginatedResponse<Compra>>('/passagens', { params: { page, size } }),
+  getAll: (page = 0, size = 20) => 
+    api.get<Compra[]>('/passagens', { params: { page, size } }),
   
   getById: (id: number) => 
     api.get<Compra>(`/passagens/${id}`),

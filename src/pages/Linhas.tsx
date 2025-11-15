@@ -41,9 +41,9 @@ const Linhas = () => {
     },
   });
 
-  const linhas = linhasData?.content || [];
-  const cronogramas = cronogramasData?.content || [];
-  const viagens = viagensData?.content || [];
+  const linhas = linhasData || [];
+  const cronogramas = cronogramasData || [];
+  const viagens = viagensData || [];
 
   if (linhasLoading) {
     return (

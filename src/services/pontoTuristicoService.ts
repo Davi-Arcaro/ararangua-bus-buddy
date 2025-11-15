@@ -1,9 +1,9 @@
-import { api, PaginatedResponse } from './api';
+import { api } from './api';
 import { PontoTuristico } from '@/types/transit';
 
 export const pontoTuristicoService = {
-  getAll: (page = 0, size = 10) => 
-    api.get<PaginatedResponse<PontoTuristico>>('/pontos-turisticos', { params: { page, size } }),
+  getAll: (page = 0, size = 20) => 
+    api.get<PontoTuristico[]>('/pontos-turisticos', { params: { page, size } }),
   
   getById: (id: number) => 
     api.get<PontoTuristico>(`/pontos-turisticos/${id}`),
